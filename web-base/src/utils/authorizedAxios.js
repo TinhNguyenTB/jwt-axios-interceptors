@@ -5,13 +5,18 @@ import { API_ROOT } from "~/utils/constants";
 const axiosInstance = axios.create({
   baseURL: API_ROOT,
   timeout: 10 * 60 * 1000, // 10 min
-  //   withCredentials: true,
+  withCredentials: true,
 });
 
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Do something before request is sent
+    // Lấy accessToken trong localStorage
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      // Gán vào request header
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   (error) => {

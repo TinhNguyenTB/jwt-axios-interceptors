@@ -1,16 +1,18 @@
-// Author: TrungQuanDev: https://youtube.com/@trungquandev
-import { StatusCodes } from 'http-status-codes'
+import { StatusCodes } from "http-status-codes";
 
 const access = async (req, res) => {
   try {
-    const user = { email: 'trungquandev.official@gmail.com' }
+    const userInfo = {
+      id: req.jwtDecoded.id,
+      email: req.jwtDecoded.email,
+    };
 
-    res.status(StatusCodes.OK).json(user)
+    res.status(StatusCodes.OK).json(userInfo);
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
   }
-}
+};
 
 export const dashboardController = {
-  access
-}
+  access,
+};
