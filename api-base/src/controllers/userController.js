@@ -26,10 +26,9 @@ const login = async (req, res) => {
       req.body.email !== MOCK_DATABASE.USER.EMAIL ||
       req.body.password !== MOCK_DATABASE.USER.PASSWORD
     ) {
-      res
+      return res
         .status(StatusCodes.FORBIDDEN)
         .json({ message: "Your email or password is incorrect!" });
-      return;
     }
 
     // Trường hợp nhập đúng thông tin tài khoản, tạo token và trả về cho phía Client
@@ -89,10 +88,45 @@ const logout = async (req, res) => {
 
 const refreshToken = async (req, res) => {
   try {
-    // Do something
-    res.status(StatusCodes.OK).json({ message: " Refresh Token API success." });
+    // Cách 1: Lấy refreshToken trong cookie
+    const refreshTokenFromCookie = req.cookies?.refreshToken;
+
+    // Cách 2: Lấy từ localStorage trong body
+    const refreshTokenFromBody = req.body.refreshToken;
+    // console.log(refreshTokenFromBody);
+    // Verify token
+    const refreshTokenDecoded = await JwtProvider.verifyToken(
+      refreshTokenFromBody,
+      // refreshTokenFromCookie,
+      REFRESH_TOKEN_SECRET_SIGNATURE
+    );
+
+    // Tạo accessToken mới
+    const payload = {
+      id: refreshTokenDecoded.id,
+      email: refreshTokenDecoded.email,
+    };
+    const accessToken = await JwtProvider.generateToken(
+      payload,
+      ACCESS_TOKEN_SECRET_SIGNATURE,
+      "1h"
+      // "5s"
+    );
+    // Gán lại vào cookie
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: ms("14 days"),
+    });
+
+    // Trả về accessToken mới trong trường hợp FE cần để lưu vào localStorage
+    res.status(StatusCodes.OK).json({ accessToken });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Refresh token API failed",
+    });
   }
 };
 
