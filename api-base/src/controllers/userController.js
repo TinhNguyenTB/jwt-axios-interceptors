@@ -47,7 +47,8 @@ const login = async (req, res) => {
     const refreshToken = await JwtProvider.generateToken(
       payload,
       REFRESH_TOKEN_SECRET_SIGNATURE,
-      "14 days"
+      // "14 days"
+      15
     );
 
     res.cookie("accessToken", accessToken, {
@@ -93,11 +94,11 @@ const refreshToken = async (req, res) => {
 
     // Cách 2: Lấy từ localStorage trong body
     const refreshTokenFromBody = req.body.refreshToken;
-    // console.log(refreshTokenFromBody);
+
     // Verify token
     const refreshTokenDecoded = await JwtProvider.verifyToken(
-      refreshTokenFromBody,
-      // refreshTokenFromCookie,
+      // refreshTokenFromBody,
+      refreshTokenFromCookie,
       REFRESH_TOKEN_SECRET_SIGNATURE
     );
 
