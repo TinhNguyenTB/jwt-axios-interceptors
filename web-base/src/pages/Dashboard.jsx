@@ -6,6 +6,7 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { handleLogoutAPI } from "~/apis";
 import axiosInstance from "~/utils/authorizedAxios";
 import { API_ROOT } from "~/utils/constants";
 
@@ -25,13 +26,10 @@ function Dashboard() {
   }, []);
 
   const handleLogout = async () => {
-    // TH1: Dùng localStorage => xóa thông tin trong localStorage
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("userInfo");
+    await handleLogoutAPI();
 
-    // TH2: Dùng Http only cookie => Gọi API xử lý remove cookie
-    await axiosInstance.delete(`${API_ROOT}/v1/users/logout`);
+    // Xóa thông tin user (Cả 2 TH đều làm)
+    localStorage.removeItem("userInfo");
     setUser(null);
 
     // Cuối cùng navigate đến trang login
