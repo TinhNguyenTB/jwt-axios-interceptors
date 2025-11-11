@@ -12,11 +12,19 @@ import {
  * Nếu muốn học kỹ và chuẩn chỉnh đầy đủ hơn thì xem Playlist này nhé:
  * https://www.youtube.com/playlist?list=PLP6tw4Zpj-RIMgUPYxhLBVCpaBs94D73V
  */
+
+const MOCK_ROLES = {
+  CLIENT: "client",
+  MODERATOR: "moderator",
+  ADMIN: "admin",
+};
+
 const MOCK_DATABASE = {
   USER: {
     ID: "admin-sample-id-12345678",
     EMAIL: "admin@gmail.com",
     PASSWORD: "admin",
+    ROLE: MOCK_ROLES.CLIENT,
   },
 };
 
@@ -32,23 +40,24 @@ const login = async (req, res) => {
     }
 
     // Trường hợp nhập đúng thông tin tài khoản, tạo token và trả về cho phía Client
-    const payload = {
+    const userInfo = {
       id: MOCK_DATABASE.USER.ID,
       email: MOCK_DATABASE.USER.EMAIL,
+      role: MOCK_DATABASE.USER.ROLE,
     };
 
     const accessToken = await JwtProvider.generateToken(
-      payload,
+      userInfo,
       ACCESS_TOKEN_SECRET_SIGNATURE,
-      // "1h"
-      "5s"
+      "1h"
+      // "5s"
     );
 
     const refreshToken = await JwtProvider.generateToken(
-      payload,
+      userInfo,
       REFRESH_TOKEN_SECRET_SIGNATURE,
-      // "14 days"
-      15
+      "14 days"
+      // 15
     );
 
     res.cookie("accessToken", accessToken, {
@@ -66,8 +75,7 @@ const login = async (req, res) => {
     });
 
     res.status(StatusCodes.OK).json({
-      id: payload.id,
-      email: payload.email,
+      ...userInfo,
       accessToken,
       refreshToken,
     });
@@ -103,15 +111,16 @@ const refreshToken = async (req, res) => {
     );
 
     // Tạo accessToken mới
-    const payload = {
+    const userInfo = {
       id: refreshTokenDecoded.id,
       email: refreshTokenDecoded.email,
+      role: refreshTokenDecoded.role,
     };
     const accessToken = await JwtProvider.generateToken(
-      payload,
+      userInfo,
       ACCESS_TOKEN_SECRET_SIGNATURE,
-      // "1h"
-      "5s"
+      "1h"
+      // "5s"
     );
     // Gán lại vào cookie
     res.cookie("accessToken", accessToken, {

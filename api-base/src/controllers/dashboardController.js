@@ -5,6 +5,7 @@ const access = async (req, res) => {
     const userInfo = {
       id: req.jwtDecoded.id,
       email: req.jwtDecoded.email,
+      role: req.jwtDecoded.role,
     };
 
     res.status(StatusCodes.OK).json(userInfo);

@@ -26,6 +26,7 @@ function Login() {
     const userInfo = {
       id: res.data.id,
       email: res.data.email,
+      role: res.data.role,
     };
 
     localStorage.setItem("accessToken", res.data?.accessToken);
