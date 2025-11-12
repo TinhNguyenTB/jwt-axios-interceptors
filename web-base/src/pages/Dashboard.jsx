@@ -5,7 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { handleLogoutAPI } from "~/apis";
 import axiosInstance from "~/utils/authorizedAxios";
 import { API_ROOT, TAB_URLS } from "~/utils/constants";
@@ -18,8 +18,21 @@ import TabPanel from "@mui/lab/TabPanel";
 function Dashboard() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [tab, setTab] = useState(TAB_URLS.DASHBOARD);
+  // Lấy ra giá trị tab dựa thoe url khi refresh trang
+  // console.log(location);
+  const getDefaultActiveTab = () => {
+    let activeTab = TAB_URLS.DASHBOARD;
+    Object.values(TAB_URLS).forEach((tab) => {
+      if (location.pathname.includes(tab)) {
+        activeTab = tab;
+      }
+    });
+    return activeTab;
+  };
+
+  const [tab, setTab] = useState(getDefaultActiveTab());
 
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
@@ -132,11 +145,36 @@ function Dashboard() {
             onChange={handleChangeTab}
             aria-label="RBAC Permissions Tabs"
           >
-            <Tab label="Dashboard" value={TAB_URLS.DASHBOARD} />
-            <Tab label="Support" value={TAB_URLS.SUPPORT} />
-            <Tab label="Messages" value={TAB_URLS.MESSAGES} />
-            <Tab label="Revenue" value={TAB_URLS.REVENUE} />
-            <Tab label="Admin Tools" value={TAB_URLS.ADMIN_TOOLS} />
+            <Tab
+              label="Dashboard"
+              value={TAB_URLS.DASHBOARD}
+              component={Link}
+              to="/dashboard"
+            />
+            <Tab
+              label="Support"
+              value={TAB_URLS.SUPPORT}
+              component={Link}
+              to="/support"
+            />
+            <Tab
+              label="Messages"
+              value={TAB_URLS.MESSAGES}
+              component={Link}
+              to="/messages"
+            />
+            <Tab
+              label="Revenue"
+              value={TAB_URLS.REVENUE}
+              component={Link}
+              to="/revenue"
+            />
+            <Tab
+              label="Admin Tools"
+              value={TAB_URLS.ADMIN_TOOLS}
+              component={Link}
+              to="/admin-tools"
+            />
           </TabList>
         </Box>
         <TabPanel value={TAB_URLS.DASHBOARD}>
