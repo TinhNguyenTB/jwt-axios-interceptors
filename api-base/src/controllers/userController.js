@@ -24,7 +24,7 @@ const MOCK_DATABASE = {
     ID: "admin-sample-id-12345678",
     EMAIL: "admin@gmail.com",
     PASSWORD: "admin",
-    ROLE: MOCK_ROLES.CLIENT,
+    ROLE: MOCK_ROLES.MODERATOR,
   },
 };
 
