@@ -14,18 +14,18 @@ const isAuthorized = async (req, res, next) => {
   }
 
   // Cách 2: Lấy accessToken từ header
-  const accessTokenFromHeader = req.headers?.authorization;
-  if (!accessTokenFromHeader) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: "Unauthorized! Token not found!",
-    });
-  }
+  // const accessTokenFromHeader = req.headers?.authorization;
+  // if (!accessTokenFromHeader) {
+  //   return res.status(StatusCodes.UNAUTHORIZED).json({
+  //     message: "Unauthorized! Token not found!",
+  //   });
+  // }
 
   try {
     // b1: Giải mã token xem có hợp lệ hay không
     const accessTokenDecoded = await JwtProvider.verifyToken(
-      //   accessTokenFromCookie,
-      accessTokenFromHeader.substring("Bearer ".length),
+      accessTokenFromCookie,
+      // accessTokenFromHeader.substring("Bearer ".length),
       ACCESS_TOKEN_SECRET_SIGNATURE
     );
     // console.log("accessTokenDecoded", accessTokenDecoded);
