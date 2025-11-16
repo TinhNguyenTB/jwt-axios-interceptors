@@ -6,6 +6,7 @@ import {
   JwtProvider,
   REFRESH_TOKEN_SECRET_SIGNATURE,
 } from "~/providers/JwtProvider";
+import { MOCK_USER_LEVEL_1 } from "~/models/mockDatabase-Level-1";
 
 /**
  * Mock nhanh thông tin user thay vì phải tạo Database rồi query.
@@ -13,26 +14,11 @@ import {
  * https://www.youtube.com/playlist?list=PLP6tw4Zpj-RIMgUPYxhLBVCpaBs94D73V
  */
 
-const MOCK_ROLES = {
-  CLIENT: "client",
-  MODERATOR: "moderator",
-  ADMIN: "admin",
-};
-
-const MOCK_DATABASE = {
-  USER: {
-    ID: "admin-sample-id-12345678",
-    EMAIL: "admin@gmail.com",
-    PASSWORD: "admin",
-    ROLE: MOCK_ROLES.MODERATOR,
-  },
-};
-
 const login = async (req, res) => {
   try {
     if (
-      req.body.email !== MOCK_DATABASE.USER.EMAIL ||
-      req.body.password !== MOCK_DATABASE.USER.PASSWORD
+      req.body.email !== MOCK_USER_LEVEL_1.EMAIL ||
+      req.body.password !== MOCK_USER_LEVEL_1.PASSWORD
     ) {
       return res
         .status(StatusCodes.FORBIDDEN)
@@ -41,9 +27,9 @@ const login = async (req, res) => {
 
     // Trường hợp nhập đúng thông tin tài khoản, tạo token và trả về cho phía Client
     const userInfo = {
-      id: MOCK_DATABASE.USER.ID,
-      email: MOCK_DATABASE.USER.EMAIL,
-      role: MOCK_DATABASE.USER.ROLE,
+      id: MOCK_USER_LEVEL_1.ID,
+      email: MOCK_USER_LEVEL_1.EMAIL,
+      role: MOCK_USER_LEVEL_1.ROLE,
     };
 
     const accessToken = await JwtProvider.generateToken(
